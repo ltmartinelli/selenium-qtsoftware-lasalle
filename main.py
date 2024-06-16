@@ -82,4 +82,3 @@ def test_all():
     test_accordion_buttons(driver)
     test_navigation(driver)
     driver.quit()
-    print("Something went wrong")
