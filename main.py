@@ -1,13 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-import pytest
 
 
 # Inicializa um driver do Chrome, abre a página desejada, e retorna o driver
 def start_driver():
     driver = webdriver.Chrome()
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(10)
     driver.get("https://mkt.sispro.com.br/solicite-um-orcamento")
     return driver
 
@@ -25,7 +24,7 @@ def test_checklist_click(mydriver=None):
             assert item.get_property('checked') == True
             item.click()
             assert item.get_property('checked') == False
-        if mydriver == None:
+        if mydriver is None:
             driver.quit()
     except:
         print("Something went wrong")
@@ -46,7 +45,7 @@ def test_email_validation(mydriver=None):
         email_input.send_keys('valid@gmail.com')
         assert 'error' not in email_input.get_attribute('class')
 
-        if mydriver == None:
+        if mydriver is None:
             driver.quit()
     except:
         print("Something went wrong")
@@ -67,7 +66,22 @@ def test_accordion_buttons(mydriver=None):
                 element.click()
                 assert 'active' not in element.get_attribute('class')
 
-        if mydriver == None:
+        if mydriver is None:
+            driver.quit()
+    except:
+        print("Something went wrong")
+
+
+# Verifica navegação
+def test_navigation(mydriver=None):
+    try:
+        driver = start_driver() if not mydriver else mydriver
+
+        driver.get('https://www.sispro.com.br/')
+        home = driver.find_element(By.LINK_TEXT, 'Solicite contato comercial')
+        assert home.get_attribute('href') == 'https://mkt.sispro.com.br/solicite-um-orcamento'
+        home.click()
+        if mydriver is None:
             driver.quit()
     except:
         print("Something went wrong")
@@ -79,6 +93,7 @@ def test_all():
         test_checklist_click(driver)
         test_email_validation(driver)
         test_accordion_buttons(driver)
+        test_navigation(driver)
         driver.quit()
     except:
         print("Something went wrong")
